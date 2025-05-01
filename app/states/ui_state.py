@@ -7,7 +7,7 @@ class UiState(rx.State):
     active_tab: str = "Chat"
     active_session_date: str | None = None
     sidebar_open: bool = False
-    sidebar_collapsed: bool = False
+    sidebar_collapsed: bool = True
 
     @rx.var
     def current_active_session(self) -> str | None:
@@ -18,14 +18,11 @@ class UiState(rx.State):
     def toggle_sidebar(self):
         """Toggle the sidebar visibility for mobile overlay."""
         self.sidebar_open = not self.sidebar_open
-        if self.sidebar_open:
-            self.sidebar_collapsed = False
 
     @rx.event
     def toggle_sidebar_collapse(self):
         """Toggle the sidebar collapse state for desktop."""
         self.sidebar_collapsed = not self.sidebar_collapsed
-        self.sidebar_open = True
 
     @rx.event
     def set_active_tab(self, tab: str):

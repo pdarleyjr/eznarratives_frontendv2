@@ -13,21 +13,21 @@ def index() -> rx.Component:
             & ~UiState.sidebar_collapsed,
             rx.el.div(
                 on_click=UiState.toggle_sidebar,
-                class_name="fixed inset-0 bg-black/30 z-20 lg:hidden transition-opacity duration-300 ease-in-out opacity-100 animate-fade-in",
+                class_name="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300 ease-in-out opacity-100 animate-fade-in",
             ),
             rx.el.div(
-                class_name="fixed inset-0 z-20 lg:hidden transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none"
+                class_name="fixed inset-0 z-40 lg:hidden transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none"
             ),
         ),
         rx.el.main(
             tab_container(),
             class_name=rx.cond(
                 UiState.sidebar_collapsed,
-                "flex-1 overflow-hidden transition-all duration-300 ease-in-out lg:ml-16 pt-16 lg:pt-0",
-                "flex-1 overflow-hidden transition-all duration-300 ease-in-out lg:ml-64 pt-16 lg:pt-0",
+                "flex-1 overflow-hidden transition-all duration-300 ease-in-out lg:ml-20",
+                "flex-1 overflow-hidden transition-all duration-300 ease-in-out lg:ml-64",
             ),
         ),
-        class_name="flex h-screen bg-background",
+        class_name="flex h-screen bg-gray-100",
     )
 
 
@@ -66,13 +66,19 @@ page_meta = [
     {
         "rel": "mask-icon",
         "href": "/safari-pinned-tab.svg",
-        "color": "#5bbad5",
+        "color": "#5B3FEA",
     },
     {
         "name": "msapplication-TileColor",
-        "content": "#da532c",
+        "content": "#5B3FEA",
     },
 ]
+theme = rx.theme(
+    appearance="light",
+    accent_color="blue",
+    gray_color="slate",
+    radius="medium",
+)
 app = rx.App(
     theme=rx.theme(appearance="light"),
     stylesheets=["/styles.css"],

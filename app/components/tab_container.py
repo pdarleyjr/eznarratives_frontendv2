@@ -26,11 +26,11 @@ def chat_content() -> rx.Component:
                                 - 1,
                             ),
                         ),
-                        class_name="flex flex-col gap-8 p-4 sm:p-6 lg:p-8 pb-[calc(env(safe-area-inset-bottom)+7rem)]",
+                        class_name="flex flex-col gap-6 p-4 sm:p-6 lg:p-8 pb-24",
                     ),
                     scrollbars="vertical",
                     type="auto",
-                    class_name="flex-grow",
+                    class_name="absolute inset-0 overflow-y-auto",
                 ),
                 preset_cards(),
             ),
@@ -38,60 +38,80 @@ def chat_content() -> rx.Component:
         ),
         rx.el.div(
             input_area(),
-            class_name="p-4 bg-gray-50 border-t border-gray-200 sticky bottom-0 pb-[env(safe-area-inset-bottom)]",
+            class_name="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-gray-100 via-gray-100 to-transparent z-10 pb-[calc(env(safe-area-inset-bottom)+1rem)]",
         ),
-        class_name="flex flex-col h-full bg-background",
+        class_name="flex flex-col h-full bg-background relative",
     )
 
 
-def tab_button(tab_name: str) -> rx.Component:
-    """A single tab button."""
+def tab_button(
+    tab_name: str, icon_name: str
+) -> rx.Component:
+    """A single tab button with icon and text."""
+    is_active = UiState.active_tab == tab_name
     return rx.el.button(
-        tab_name,
+        rx.icon(
+            icon_name,
+            size=20,
+            class_name=rx.cond(
+                is_active,
+                "text-primary",
+                "text-neutral group-hover:text-primary transition-colors",
+            ),
+        ),
+        rx.el.span(tab_name, class_name="ml-2"),
         on_click=lambda: UiState.set_active_tab(tab_name),
         class_name=rx.cond(
-            UiState.active_tab == tab_name,
-            "px-4 py-2 border-b-2 border-primary text-primary font-medium text-sm sm:text-base transition-colors duration-150 ease-in-out min-h-[48px] flex items-center flex-1 sm:flex-none justify-center",
-            "px-4 py-2 border-b-2 border-transparent text-neutral hover:text-primary hover:border-primary text-sm sm:text-base transition-colors duration-150 ease-in-out min-h-[48px] flex items-center flex-1 sm:flex-none justify-center",
+            is_active,
+            "px-4 py-2 border-b-2 border-primary text-primary font-medium text-sm sm:text-base transition-colors duration-150 ease-in-out min-h-[48px] flex items-center justify-center group",
+            "px-4 py-2 border-b-2 border-transparent text-neutral hover:text-primary hover:border-gray-300 text-sm sm:text-base transition-colors duration-150 ease-in-out min-h-[48px] flex items-center justify-center group",
         ),
         type="button",
-        aria_selected=rx.cond(
-            UiState.active_tab == tab_name, "true", "false"
-        ),
+        aria_selected=rx.cond(is_active, "true", "false"),
         role="tab",
+        aria_label=f"Select {tab_name} tab",
     )
 
 
 def app_header() -> rx.Component:
-    """Header containing menu toggle for mobile and app title."""
+    """Header containing menu toggle, logo, and app title."""
     return rx.el.header(
         rx.el.div(
             rx.el.button(
                 rx.icon("menu", size=24),
                 on_click=UiState.toggle_sidebar,
-                class_name="p-2 text-neutral hover:bg-secondary rounded-md lg:hidden h-11 w-11 flex items-center justify-center mr-2",
+                class_name="p-2 text-neutral hover:bg-secondary rounded-md lg:hidden h-11 w-11 flex items-center justify-center",
                 type="button",
                 aria_label="Open Menu",
                 aria_controls="main-sidebar",
                 aria_expanded=UiState.sidebar_open,
             ),
-            rx.el.h1(
-                UiState.active_tab,
-                class_name="text-lg font-semibold text-gray-800 flex-1 text-center lg:text-left",
+            rx.el.div(
+                rx.el.img(
+                    src="/favicon.ico",
+                    alt="EZ Narratives Logo",
+                    class_name="h-7 w-7 mr-2",
+                ),
+                rx.el.h1(
+                    "EZ Narratives",
+                    class_name="text-lg font-semibold text-gray-800 whitespace-nowrap",
+                ),
+                class_name="flex items-center",
             ),
+            rx.el.div(class_name="flex-1"),
             rx.el.div(class_name="w-11 lg:hidden"),
         ),
-        class_name="fixed top-0 left-0 right-0 z-20 bg-white border-b border-gray-200 h-16 flex items-center px-4 pt-[env(safe-area-inset-top)] lg:relative lg:left-auto lg:right-auto lg:pt-0",
+        class_name="sticky top-0 z-30 bg-white border-b border-gray-200 h-16 flex items-center px-4 pt-[env(safe-area-inset-top)] shadow-sm",
     )
 
 
 def tab_bar() -> rx.Component:
-    """Tab bar component."""
+    """Tab bar component placed below the header."""
     return rx.el.div(
-        tab_button("Chat"),
-        tab_button("EMS"),
-        tab_button("Fire"),
-        class_name="flex border-b border-gray-200 bg-white z-10 items-center px-0 sm:px-4 h-14 justify-around sm:justify-start pb-[env(safe-area-inset-bottom)] sm:pb-0 fixed bottom-0 left-0 right-0 lg:relative lg:bottom-auto lg:left-auto lg:right-auto",
+        tab_button("Chat", "message-circle"),
+        tab_button("EMS", "heart-pulse"),
+        tab_button("Fire", "flame"),
+        class_name="flex border-b border-gray-200 bg-white z-10 items-center px-0 sm:px-4 h-14 justify-around sm:justify-start sticky top-16",
         role="tablist",
         aria_label="Main Content Tabs",
     )
@@ -101,6 +121,7 @@ def tab_container() -> rx.Component:
     """Container for the header, tab bar, and tab content."""
     return rx.el.div(
         app_header(),
+        tab_bar(),
         rx.el.div(
             rx.match(
                 UiState.active_tab,
@@ -109,8 +130,7 @@ def tab_container() -> rx.Component:
                 ("Fire", fire_form()),
                 rx.el.div("Select a tab", class_name="p-6"),
             ),
-            class_name="flex-grow overflow-auto pb-14 lg:pb-0",
+            class_name="flex-grow overflow-auto",
         ),
-        tab_bar(),
-        class_name="flex flex-col h-full",
+        class_name="flex flex-col h-full w-full",
     )
