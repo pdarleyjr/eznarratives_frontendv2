@@ -9,10 +9,11 @@ def index() -> rx.Component:
     return rx.el.div(
         sidebar(),
         rx.cond(
-            UiState.sidebar_open,
+            UiState.sidebar_open
+            & ~UiState.sidebar_collapsed,
             rx.el.div(
                 on_click=UiState.toggle_sidebar,
-                class_name="fixed inset-0 bg-black/30 z-20 lg:hidden transition-opacity duration-300 ease-in-out opacity-100",
+                class_name="fixed inset-0 bg-black/30 z-20 lg:hidden transition-opacity duration-300 ease-in-out opacity-100 animate-fade-in",
             ),
             rx.el.div(
                 class_name="fixed inset-0 z-20 lg:hidden transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none"
@@ -22,11 +23,11 @@ def index() -> rx.Component:
             tab_container(),
             class_name=rx.cond(
                 UiState.sidebar_collapsed,
-                "flex-1 overflow-hidden transition-all duration-300 ease-in-out lg:ml-16",
-                "flex-1 overflow-hidden transition-all duration-300 ease-in-out lg:ml-64",
+                "flex-1 overflow-hidden transition-all duration-300 ease-in-out lg:ml-16 pt-16 lg:pt-0",
+                "flex-1 overflow-hidden transition-all duration-300 ease-in-out lg:ml-64 pt-16 lg:pt-0",
             ),
         ),
-        class_name="flex h-screen bg-gray-50",
+        class_name="flex h-screen bg-background",
     )
 
 
@@ -43,6 +44,33 @@ page_meta = [
     {
         "name": "viewport",
         "content": "width=device-width, initial-scale=1, viewport-fit=cover",
+    },
+    {
+        "rel": "apple-touch-icon",
+        "sizes": "180x180",
+        "href": "/apple-touch-icon.png",
+    },
+    {
+        "rel": "icon",
+        "type": "image/png",
+        "sizes": "32x32",
+        "href": "/favicon-32x32.png",
+    },
+    {
+        "rel": "icon",
+        "type": "image/png",
+        "sizes": "16x16",
+        "href": "/favicon-16x16.png",
+    },
+    {"rel": "manifest", "href": "/site.webmanifest"},
+    {
+        "rel": "mask-icon",
+        "href": "/safari-pinned-tab.svg",
+        "color": "#5bbad5",
+    },
+    {
+        "name": "msapplication-TileColor",
+        "content": "#da532c",
     },
 ]
 app = rx.App(
