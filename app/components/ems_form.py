@@ -17,8 +17,8 @@ def form_section_button(
     )
     inactive_class = f"{base_class} hover:bg-gray-100 dark:hover:bg-gray-700/50"
     icon_base = "size-5"
-    icon_active = f"{icon_base} text-primary"
-    icon_inactive = f"{icon_base} text-neutral dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors"
+    icon_active = f"{icon_base} stroke-primary"
+    icon_inactive = f"{icon_base} stroke-neutral dark:stroke-gray-400 group-hover:stroke-gray-600 dark:group-hover:stroke-gray-300 transition-colors"
     label_base = "text-xs sm:text-sm font-medium"
     label_active = f"{label_base} text-primary"
     label_inactive = f"{label_base} text-neutral dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors"
@@ -124,7 +124,7 @@ def form_select(
             rx.icon(
                 tag="chevron-down",
                 size=18,
-                class_name="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 dark:text-gray-400",
+                class_name="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none stroke-gray-500 dark:stroke-gray-400",
             ),
             class_name="relative",
         ),
@@ -426,7 +426,9 @@ def treatment_section() -> rx.Component:
                 ),
                 rx.el.button(
                     rx.icon(
-                        "plus", size=14, class_name="mr-1"
+                        "plus",
+                        size=14,
+                        class_name="mr-1 stroke-current",
                     ),
                     "Add Med",
                     on_click=EmsState.add_medication,
@@ -480,7 +482,11 @@ def treatment_section() -> rx.Component:
                                 ),
                             ),
                             rx.el.button(
-                                rx.icon("trash-2", size=16),
+                                rx.icon(
+                                    "trash-2",
+                                    size=16,
+                                    class_name="stroke-current",
+                                ),
                                 on_click=lambda: EmsState.remove_medication(
                                     index
                                 ),
@@ -598,13 +604,17 @@ def ems_form() -> rx.Component:
             ),
             rx.el.div(
                 rx.el.button(
-                    rx.icon("send", size=20),
+                    rx.icon(
+                        "arrow-up",
+                        class_name="stroke-current",
+                        size=24,
+                    ),
                     on_click=EmsState.generate_narrative,
-                    class_name="p-3 rounded-full text-white bg-accent hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-gray-900 shadow-lg transition-transform transform hover:scale-105 active:scale-95",
+                    class_name="w-11 h-11 p-2 rounded-lg text-white bg-accent hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-gray-900 shadow-lg transition-transform transform hover:scale-105 active:scale-95 flex items-center justify-center",
                     type="button",
                     aria_label="Generate EMS Narrative",
                 ),
-                class_name="absolute bottom-6 right-6 z-20",
+                class_name="absolute bottom-4 right-4 z-20",
             ),
             class_name="flex-1 flex flex-col overflow-hidden relative",
         ),

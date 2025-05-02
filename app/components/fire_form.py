@@ -23,7 +23,7 @@ def fire_form() -> rx.Component:
                     class_name="text-sm text-gray-500 dark:text-gray-400 italic p-4 text-center",
                 ),
             ),
-            class_name="h-1/3 md:h-[calc(50%-4rem)] bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent",
+            class_name="h-[calc(50%-2rem)] md:h-[calc(50%-4rem)] bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent",
         ),
         rx.el.div(
             rx.el.div(
@@ -55,9 +55,13 @@ def fire_form() -> rx.Component:
             ),
             rx.el.div(
                 rx.el.button(
-                    rx.icon("send", size=20),
+                    rx.icon(
+                        "arrow-up",
+                        class_name="stroke-current",
+                        size=24,
+                    ),
                     on_click=FireState.generate_narrative,
-                    class_name="p-3 rounded-lg text-white bg-accent hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-gray-900 shadow-md transition-transform transform hover:scale-105 active:scale-95",
+                    class_name="w-11 h-11 p-2 rounded-lg text-white bg-accent hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-gray-900 shadow-md transition-transform transform hover:scale-105 active:scale-95 flex items-center justify-center",
                     type="button",
                     aria_label="Generate Fire Narrative",
                 ),

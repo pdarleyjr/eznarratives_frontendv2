@@ -37,22 +37,19 @@ def index() -> rx.Component:
             sidebar(),
             rx.el.main(
                 tab_container(),
-                class_name=rx.cond(
-                    UiState.is_sidebar_open,
-                    "transition-margin duration-300 ease-in-out md:ml-64 mt-16",
-                    "transition-margin duration-300 ease-in-out md:ml-16 mt-16",
-                ),
-                padding_top="1rem",
+                class_name=f"flex-1 overflow-auto bg-background dark:bg-gray-900 mt-16 transition-all duration-300 ease-in-out {UiState.main_content_margin} z-10",
+                padding_top="env(safe-area-inset-top)",
             ),
-            class_name="flex min-h-screen",
+            class_name="flex h-full",
         ),
-        rx.toast.provider(),
+        rx.toast.provider(z_index=40),
         class_name=rx.cond(
             UiState.theme_appearance == "dark",
-            "dark bg-neutral-900",
+            "dark bg-gray-900",
             "bg-background",
         )
-        + " min-h-screen",
+        + " min-h-screen font-sans",
+        id="app-root",
     )
 
 

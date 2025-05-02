@@ -10,13 +10,13 @@ def session_item(
 ) -> rx.Component:
     """Displays a single session item in the sidebar."""
     icon_map = {
-        "EMS": ("activity", "text-red-500"),
-        "Fire": ("flame", "text-orange-500"),
-        "Both": ("zap", "text-purple-500"),
-        "Chat": ("message-circle", "text-blue-500"),
+        "EMS": ("heart-pulse", "stroke-red-500"),
+        "Fire": ("flame", "stroke-orange-500"),
+        "Both": ("zap", "stroke-purple-500"),
+        "Chat": ("message-square", "stroke-blue-500"),
     }
-    icon_tag, icon_color = icon_map.get(
-        session["type"], ("help-circle", "text-gray-500")
+    icon_tag, icon_color_class = icon_map.get(
+        session["type"], ("help-circle", "stroke-gray-500")
     )
     base_class = "flex items-center w-full px-3 py-2.5 rounded-lg transition-colors duration-150 ease-in-out min-h-[48px]"
     active_class = f"{base_class} bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-300 font-medium"
@@ -25,8 +25,7 @@ def session_item(
         rx.icon(
             tag=icon_tag,
             size=20,
-            class_name=f"{icon_color} flex-shrink-0 transition-all duration-300 ease-in-out",
-            margin_x=rx.cond(is_open, "0", "auto"),
+            class_name=f"{icon_color_class} flex-shrink-0 transition-all duration-300 ease-in-out {rx.cond(is_open, 'mr-3', 'mx-auto')}",
         ),
         rx.cond(
             is_open,
@@ -41,7 +40,7 @@ def session_item(
                     class_name="text-sm text-gray-700 dark:text-gray-300 truncate",
                     no_wrap=True,
                 ),
-                class_name="ml-3 overflow-hidden flex-1 text-left",
+                class_name="overflow-hidden flex-1 text-left transition-opacity duration-150 ease-in-out",
             ),
             rx.fragment(),
         ),
@@ -54,12 +53,13 @@ def session_item(
         width="100%",
         justify_content=rx.cond(is_open, "start", "center"),
         aria_label=f"Select session from {session['date']}",
+        title=rx.cond(is_open, "", session["preview"]),
     )
 
 
 def sidebar() -> rx.Component:
     """Renders the collapsible sidebar."""
-    return rx.el.aside(
+    sidebar_container = rx.el.aside(
         rx.el.div(
             rx.el.div(class_name="h-16 flex-shrink-0"),
             rx.el.div(
@@ -90,18 +90,13 @@ def sidebar() -> rx.Component:
                     rx.icon(
                         tag="settings",
                         size=20,
-                        class_name="text-gray-600 dark:text-gray-400 flex-shrink-0 transition-all duration-300 ease-in-out",
-                        margin_x=rx.cond(
-                            UiState.is_sidebar_open,
-                            "0",
-                            "auto",
-                        ),
+                        class_name=f"stroke-gray-600 dark:stroke-gray-400 flex-shrink-0 transition-all duration-300 ease-in-out {rx.cond(UiState.is_sidebar_open, 'mr-3', 'mx-auto')}",
                     ),
                     rx.cond(
                         UiState.is_sidebar_open,
                         rx.el.span(
                             "Settings",
-                            class_name="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300 flex-1 text-left whitespace-nowrap",
+                            class_name="text-sm font-medium text-gray-700 dark:text-gray-300 flex-1 text-left whitespace-nowrap transition-opacity duration-150 ease-in-out",
                         ),
                         rx.fragment(),
                     ),
@@ -114,10 +109,16 @@ def sidebar() -> rx.Component:
                         "center",
                     ),
                     aria_label="Open Settings",
+                    title=rx.cond(
+                        UiState.is_sidebar_open,
+                        "",
+                        "Settings",
+                    ),
                 ),
                 class_name="mt-auto p-2 border-t border-white/20 dark:border-gray-700/30 pb-safe-bottom flex-shrink-0",
             ),
             class_name="flex flex-col h-full",
         ),
-        class_name=f"fixed top-0 left-0 h-screen transition-width duration-300 ease-in-out bg-gradient-to-b from-white/80 to-white/50 dark:from-neutral-800/80 dark:to-neutral-800/50 backdrop-blur-lg border-r border-white/20 dark:border-neutral-700/30 shadow-lg flex-shrink-0 {UiState.sidebar_width} overflow-hidden z-20",
+        class_name=f"fixed top-0 left-0 h-screen transition-all duration-300 ease-in-out bg-gradient-to-b from-white/80 to-white/50 dark:from-neutral-800/80 dark:to-neutral-800/50 backdrop-blur-lg border-r border-white/20 dark:border-neutral-700/30 shadow-lg flex-shrink-0 {UiState.sidebar_width} overflow-hidden z-30",
     )
+    return sidebar_container

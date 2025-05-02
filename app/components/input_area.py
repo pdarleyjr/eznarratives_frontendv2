@@ -11,15 +11,19 @@ def input_area() -> rx.Component:
                 placeholder="Type your message here...",
                 default_value=ChatState.current_message,
                 rows=1,
-                class_name="flex-1 resize-none p-3 pr-14 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 min-h-[48px] max-h-40 overflow-y-auto scrollbar-thin",
+                class_name="flex-1 resize-none p-3 pr-16 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 min-h-[48px] max-h-40 overflow-y-auto scrollbar-thin",
                 on_change=ChatState.set_current_message,
             ),
             rx.el.button(
-                rx.icon(tag="send", size=20),
+                rx.icon(
+                    "arrow-up",
+                    class_name="stroke-current",
+                    size=24,
+                ),
                 type="submit",
                 is_disabled=ChatState.processing
                 | (ChatState.current_message.strip() == ""),
-                class_name="absolute right-2.5 bottom-2.5 p-2.5 rounded-lg text-white bg-accent hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 ease-in-out transform active:scale-95",
+                class_name="absolute right-4 bottom-4 w-11 h-11 p-2 rounded-lg text-white bg-accent hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 ease-in-out transform active:scale-95 flex items-center justify-center",
                 aria_label="Send message",
             ),
             class_name="relative flex items-end",

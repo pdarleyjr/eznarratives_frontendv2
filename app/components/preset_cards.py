@@ -14,23 +14,23 @@ def card(
             rx.icon(
                 tag=icon,
                 size=16,
-                class_name=icon_color_class,
+                class_name=f"{icon_color_class}",
             ),
             rx.el.p(
                 title,
-                class_name="font-medium text-gray-800 text-base",
+                class_name="font-medium text-gray-800 dark:text-gray-200 text-base",
             ),
             class_name="flex flex-row gap-2 items-center",
         ),
         rx.el.p(
             description,
-            class_name="text-gray-600 text-sm font-medium",
+            class_name="text-gray-600 dark:text-gray-400 text-sm font-medium",
         ),
         on_click=lambda: ChatState.send_preset_message(
             description
         ),
         type="button",
-        class_name="flex flex-col gap-1 border bg-white hover:bg-gray-100 shadow-sm px-4 py-3.5 rounded-xl text-start transition-colors flex-1",
+        class_name="flex flex-col gap-1 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-sm px-4 py-3.5 rounded-xl text-start transition-colors flex-1 min-h-[44px]",
     )
 
 
@@ -39,18 +39,22 @@ def preset_cards() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(
-                rx.icon("bot", size=24),
-                class_name="rounded-full bg-gray-200 p-2 size-10 inline-flex items-center justify-center",
+                rx.icon(
+                    "bot",
+                    size=24,
+                    class_name="stroke-gray-800 dark:stroke-gray-200",
+                ),
+                class_name="rounded-full bg-gray-200 dark:bg-gray-700 p-2 size-10 inline-flex items-center justify-center",
             ),
             rx.el.p(
                 "How can I help you today?",
-                class_name="text-2xl md:text-3xl font-medium text-gray-800",
+                class_name="text-2xl md:text-3xl font-medium text-gray-800 dark:text-gray-200",
             ),
-            class_name="text-black flex flex-row gap-4 items-center",
+            class_name="text-black dark:text-white flex flex-row gap-4 items-center",
         ),
         rx.el.div(
             card(
-                "message-circle",
+                "message-square",
                 "Ask a question",
                 "What is the capital of France?",
                 "stroke-green-500",
@@ -73,7 +77,7 @@ def preset_cards() -> rx.Component:
                 "What's a good mystery novel for beginners?",
                 "stroke-amber-500",
             ),
-            class_name="gap-4 grid grid-cols-1 lg:grid-cols-2 w-full",
+            class_name="gap-4 grid grid-cols-1 lg:grid-cols-2 w-full max-w-3xl",
         ),
         class_name="absolute inset-0 flex flex-col justify-center items-center gap-8 p-4 sm:p-6 lg:p-8",
     )

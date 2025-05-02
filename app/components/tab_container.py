@@ -16,8 +16,8 @@ def tab_button(
     active_class = f"{base_class} border-primary text-primary bg-primary/5 dark:bg-primary/10"
     inactive_class = f"{base_class} border-transparent text-neutral dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50"
     icon_class = "size-5"
-    icon_active_class = f"{icon_class} text-primary"
-    icon_inactive_class = f"{icon_class} text-neutral dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors"
+    icon_active_class = f"{icon_class} stroke-primary"
+    icon_inactive_class = f"{icon_class} stroke-neutral dark:stroke-gray-400 group-hover:stroke-gray-700 dark:group-hover:stroke-gray-300 transition-colors"
     label_class = "text-sm font-medium"
     label_active_class = f"{label_class} text-primary"
     label_inactive_class = f"{label_class} text-neutral dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors"
@@ -69,7 +69,7 @@ def chat_tab_content() -> rx.Component:
                             & ChatState.typing,
                         ),
                     ),
-                    class_name="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent",
+                    class_name="flex-1 overflow-y-auto p-4 pb-16 space-y-6 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent",
                 ),
             ),
             class_name="relative flex-1 overflow-hidden",
@@ -84,12 +84,12 @@ def tab_container() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             tab_button(
-                "message-circle",
+                "message-square",
                 "Chat",
                 UiState.active_tab == "Chat",
             ),
             tab_button(
-                "activity",
+                "heart-pulse",
                 "EMS",
                 UiState.active_tab == "EMS",
             ),
@@ -98,7 +98,7 @@ def tab_container() -> rx.Component:
                 "Fire",
                 UiState.active_tab == "Fire",
             ),
-            class_name="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 sticky top-16 z-10",
+            class_name="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 sticky top-16 z-20",
             role="tablist",
         ),
         rx.el.div(
@@ -109,8 +109,9 @@ def tab_container() -> rx.Component:
                 ("Fire", fire_form()),
                 rx.el.div("Unknown Tab"),
             ),
-            class_name="flex-1 overflow-hidden bg-gray-50 dark:bg-gray-900",
+            class_name="flex-1 overflow-hidden bg-background dark:bg-gray-900",
             role="tabpanel",
+            key=UiState.active_tab,
         ),
         class_name="flex flex-col h-full",
     )

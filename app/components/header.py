@@ -10,17 +10,17 @@ def header() -> rx.Component:
                 rx.icon(
                     tag="menu",
                     size=24,
-                    class_name="text-gray-600 dark:text-gray-300",
+                    class_name="stroke-gray-600 dark:stroke-gray-300",
                 ),
                 on_click=UiState.toggle_sidebar,
-                class_name="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary transition-colors transform active:scale-95",
+                class_name="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary transition-colors transform active:scale-95 sm:hidden",
                 aria_label="Toggle sidebar",
             ),
             rx.el.div(
                 rx.icon(
-                    tag="box",
+                    tag="package",
                     size=28,
-                    class_name="text-primary mr-2 flex-shrink-0",
+                    class_name="stroke-primary mr-2 flex-shrink-0",
                 ),
                 rx.el.span(
                     "EZ Narratives",
@@ -36,6 +36,7 @@ def header() -> rx.Component:
                         "sun",
                     ),
                     size=20,
+                    class_name="stroke-gray-600 dark:stroke-gray-300",
                 ),
                 on_click=UiState.toggle_theme,
                 class_name="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary transition-colors transform active:scale-95",
