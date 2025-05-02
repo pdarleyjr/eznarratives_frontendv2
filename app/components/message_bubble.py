@@ -9,9 +9,11 @@ def ai_bubble(
     return rx.el.div(
         rx.el.div(
             rx.icon(
-                "bot", size=16, class_name="stroke-gray-800"
+                "bot",
+                size=16,
+                class_name="stroke-gray-800 dark:stroke-gray-200",
             ),
-            class_name="rounded-full bg-gray-200 text-gray-800 p-2 size-8 inline-flex items-center justify-center flex-shrink-0",
+            class_name="rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 p-2 size-8 inline-flex items-center justify-center flex-shrink-0",
         ),
         rx.cond(
             message,
@@ -32,7 +34,7 @@ def user_bubble(message: str) -> rx.Component:
             message,
             class_name="text-sm sm:text-base text-white",
         ),
-        class_name="px-3 py-2 bg-primary rounded-xl w-fit self-end max-w-[90%]",
+        class_name="px-4 py-2.5 bg-primary rounded-xl w-fit self-end max-w-[90%]",
     )
 
 

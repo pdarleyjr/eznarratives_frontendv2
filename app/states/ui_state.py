@@ -15,10 +15,10 @@ class UiState(rx.State):
     @rx.var
     def sidebar_width(self) -> str:
         """Returns the Tailwind width class for the sidebar.
-        Collapses to w-16 on sm+ screens, hides completely (w-0) on mobile.
+        Collapses to w-14 (56px) on sm+ screens, hides completely (w-0) on mobile.
         """
         return rx.cond(
-            self.is_sidebar_open, "w-64", "sm:w-16 w-0"
+            self.is_sidebar_open, "w-64", "sm:w-14 w-0"
         )
 
     @rx.var
@@ -27,7 +27,7 @@ class UiState(rx.State):
         Adjusts based on sidebar width.
         """
         return rx.cond(
-            self.is_sidebar_open, "sm:ml-64", "sm:ml-16"
+            self.is_sidebar_open, "sm:ml-64", "sm:ml-14"
         )
 
     @rx.event

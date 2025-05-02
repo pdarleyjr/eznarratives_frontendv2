@@ -11,7 +11,7 @@ def form_section_button(
     is_active = (
         EmsState.active_ems_section == target_section
     )
-    base_class = "flex flex-col items-center justify-center p-3 gap-1 rounded-lg group w-full text-center transition-colors duration-150 ease-in-out min-h-[60px]"
+    base_class = "flex flex-col items-center justify-center p-3 gap-1 rounded-lg group w-full text-center transition-colors duration-150 ease-in-out min-h-[60px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 dark:focus:ring-offset-gray-800"
     active_class = (
         f"{base_class} bg-primary/10 dark:bg-primary/20"
     )
@@ -60,7 +60,7 @@ def form_input(
             id=name,
             name=name,
             type=type,
-            class_name="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-150 ease-in-out hover:border-gray-400 dark:hover:border-gray-500 min-h-[44px]",
+            class_name="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary dark:focus:border-primary sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-150 ease-in-out hover:border-gray-400 dark:hover:border-gray-500 min-h-[48px]",
             **props,
         ),
         class_name="mb-4",
@@ -82,7 +82,7 @@ def form_textarea(
             id=name,
             name=name,
             rows=rows_value,
-            class_name="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-150 ease-in-out hover:border-gray-400 dark:hover:border-gray-500 resize-y min-h-[60px]",
+            class_name="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary dark:focus:border-primary sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-150 ease-in-out hover:border-gray-400 dark:hover:border-gray-500 resize-y min-h-[80px]",
             **props,
         ),
         class_name="mb-4",
@@ -109,6 +109,7 @@ def form_select(
                     value="",
                     disabled=True,
                     hidden=True,
+                    class_name="text-gray-500",
                 ),
                 rx.foreach(
                     options,
@@ -118,12 +119,12 @@ def form_select(
                 ),
                 id=name,
                 name=name,
-                class_name="w-full appearance-none px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-150 ease-in-out hover:border-gray-400 dark:hover:border-gray-500 min-h-[44px]",
+                class_name="w-full appearance-none px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary dark:focus:border-primary sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-150 ease-in-out hover:border-gray-400 dark:hover:border-gray-500 min-h-[48px] pr-10",
                 **props,
             ),
             rx.icon(
                 tag="chevron-down",
-                size=18,
+                size=20,
                 class_name="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none stroke-gray-500 dark:stroke-gray-400",
             ),
             class_name="relative",
@@ -142,7 +143,7 @@ def form_checkbox(
                 type="checkbox",
                 id=name,
                 name=name,
-                class_name="size-4 mr-2 rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 bg-white dark:bg-gray-700 transition-colors",
+                class_name="size-4 mr-2 rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-800 bg-white dark:bg-gray-700 transition-colors cursor-pointer",
                 **props,
             ),
             label,
@@ -178,7 +179,7 @@ def form_radio_group(
                         on_change=lambda _: on_change(
                             option
                         ),
-                        class_name="size-4 mr-2 border-gray-300 dark:border-gray-600 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 bg-white dark:bg-gray-700 transition-colors",
+                        class_name="size-4 mr-2 border-gray-300 dark:border-gray-600 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-800 bg-white dark:bg-gray-700 transition-colors cursor-pointer",
                         **props,
                     ),
                     option,
@@ -432,7 +433,7 @@ def treatment_section() -> rx.Component:
                     ),
                     "Add Med",
                     on_click=EmsState.add_medication,
-                    class_name="text-xs bg-secondary dark:bg-gray-600 text-neutral dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 px-3 py-1.5 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary focus:ring-offset-1 dark:focus:ring-offset-gray-800 transition-colors transform active:scale-95",
+                    class_name="text-xs bg-secondary dark:bg-gray-600 text-neutral dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 px-3 py-1.5 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 dark:focus:ring-offset-gray-800 transition-colors transform active:scale-95",
                     type="button",
                 ),
                 class_name="flex justify-between items-center mb-2",
@@ -490,7 +491,7 @@ def treatment_section() -> rx.Component:
                                 on_click=lambda: EmsState.remove_medication(
                                     index
                                 ),
-                                class_name="text-red-500 hover:text-red-700 dark:hover:text-red-400 p-2 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 focus:outline-none focus:ring-1 focus:ring-red-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800 transition-colors mt-5 transform active:scale-95",
+                                class_name="text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 p-2 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800 transition-colors mt-5 transform active:scale-95",
                                 type="button",
                                 aria_label="Remove medication",
                             ),

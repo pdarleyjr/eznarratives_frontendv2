@@ -30,7 +30,7 @@ def card(
             description
         ),
         type="button",
-        class_name="flex flex-col gap-1 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-sm px-4 py-3.5 rounded-xl text-start transition-colors flex-1 min-h-[44px]",
+        class_name="flex flex-col gap-1 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-sm px-4 py-3 rounded-xl text-start transition-colors flex-1 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 dark:focus:ring-offset-gray-900 transform active:scale-[0.98]",
     )
 
 
@@ -48,7 +48,7 @@ def preset_cards() -> rx.Component:
             ),
             rx.el.p(
                 "How can I help you today?",
-                class_name="text-2xl md:text-3xl font-medium text-gray-800 dark:text-gray-200",
+                class_name="text-2xl md:text-xl font-medium text-gray-800 dark:text-gray-200",
             ),
             class_name="text-black dark:text-white flex flex-row gap-4 items-center",
         ),

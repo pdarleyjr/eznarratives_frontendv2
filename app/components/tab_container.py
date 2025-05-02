@@ -12,7 +12,7 @@ def tab_button(
     icon: str, label: str, is_active: rx.Var[bool]
 ) -> rx.Component:
     """Creates a button for the tab navigation."""
-    base_class = "flex items-center gap-2 px-4 py-3 border-b-2 transition-colors duration-150 ease-in-out group min-h-[48px]"
+    base_class = "relative flex flex-grow sm:flex-grow-0 items-center justify-center gap-2 px-4 py-3 border-b-2 group min-h-[48px] transition-colors duration-150 ease-in-out focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary/50"
     active_class = f"{base_class} border-primary text-primary bg-primary/5 dark:bg-primary/10"
     inactive_class = f"{base_class} border-transparent text-neutral dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50"
     icon_class = "size-5"
@@ -45,6 +45,7 @@ def tab_button(
         aria_label=f"Switch to {label} tab",
         role="tab",
         aria_selected=is_active.to_string(),
+        flex_basis="0",
     )
 
 
@@ -72,10 +73,24 @@ def chat_tab_content() -> rx.Component:
                     class_name="flex-1 overflow-y-auto p-4 pb-16 space-y-6 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent",
                 ),
             ),
-            class_name="relative flex-1 overflow-hidden",
+            class_name="relative flex-1 overflow-hidden animate-fade-in",
         ),
         input_area(),
         class_name="flex flex-col h-full",
+    )
+
+
+def ems_tab_content() -> rx.Component:
+    """Content for the EMS tab with animation."""
+    return rx.el.div(
+        ems_form(), class_name="animate-fade-in h-full"
+    )
+
+
+def fire_tab_content() -> rx.Component:
+    """Content for the Fire tab with animation."""
+    return rx.el.div(
+        fire_form(), class_name="animate-fade-in h-full"
     )
 
 
@@ -105,8 +120,8 @@ def tab_container() -> rx.Component:
             rx.match(
                 UiState.active_tab,
                 ("Chat", chat_tab_content()),
-                ("EMS", ems_form()),
-                ("Fire", fire_form()),
+                ("EMS", ems_tab_content()),
+                ("Fire", fire_tab_content()),
                 rx.el.div("Unknown Tab"),
             ),
             class_name="flex-1 overflow-hidden bg-background dark:bg-gray-900",
