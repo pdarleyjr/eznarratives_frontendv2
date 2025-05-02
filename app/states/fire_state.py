@@ -1,5 +1,6 @@
 import reflex as rx
 from typing import Dict, List, Any, TypedDict
+from app.states.session_state import SessionState
 
 
 class FireState(rx.State):
@@ -14,6 +15,8 @@ class FireState(rx.State):
         "Wildfire",
         "Medical Assist",
         "Hazardous Materials",
+        "Service Call",
+        "Alarm Activation",
         "Other",
     ]
     additional_information: str = ""
@@ -22,17 +25,22 @@ class FireState(rx.State):
     async def generate_narrative(self):
         """Generate narrative from Fire data."""
         print("Generating Fire narrative...")
-        narrative = f"Unit {self.unit} responded to a {self.emergency_type}. "
+        narrative = f"Unit {self.unit or '[Unit]'}"
+        narrative += f" responded to a report of {self.emergency_type or '[Emergency]'}. "
         if self.additional_information:
-            narrative += f"Additional info: {self.additional_information}."
+            narrative += f"Additional details: {self.additional_information}."
         else:
-            narrative += (
-                "No additional information provided."
-            )
-        self.fire_narrative = narrative
-        narrative_preview = narrative[:50] + "..."
-        from app.states.session_state import SessionState
-
+            narrative += "Situation addressed as per standard procedures."
+        async with self:
+            self.fire_narrative = narrative.strip()
+        yield rx.toast.success(
+            "Fire narrative generated!",
+            duration=2000,
+            position="top-center",
+        )
+        narrative_preview = self.fire_narrative[:50] + (
+            "..." if len(self.fire_narrative) > 50 else ""
+        )
         session_state = await self.get_state(SessionState)
         await session_state.add_session(
             "Fire", narrative_preview

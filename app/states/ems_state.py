@@ -1,5 +1,6 @@
 import reflex as rx
 from typing import Dict, List, Any, TypedDict
+from app.states.session_state import SessionState
 
 
 class EmsState(rx.State):
@@ -48,16 +49,27 @@ class EmsState(rx.State):
     protocols: List[str] = [
         "Cardiac Arrest",
         "Stroke",
-        "Trauma",
+        "Trauma - Adult",
+        "Trauma - Pediatric",
         "Allergic Reaction",
         "Seizure",
+        "Overdose",
+        "Respiratory Distress",
     ]
     interventions: List[str] = []
     all_interventions: List[str] = [
         "IV Establishment",
+        "IO Access",
         "Oxygen Administration",
         "Medication Administration",
-        "Airway Management",
+        "Airway Management (BVM)",
+        "Intubation",
+        "CPAP",
+        "Defibrillation",
+        "Cardioversion",
+        "Pacing",
+        "Splinting",
+        "Bleeding Control",
     ]
     medications_given: List[Dict[str, str | int]] = []
     destination_facility: str = ""
@@ -74,13 +86,13 @@ class EmsState(rx.State):
     @rx.event
     def toggle_protocol(self, protocol: str, checked: bool):
         """Add or remove a protocol from the selection."""
+        current_selection = set(self.protocol_selection)
         if checked:
-            if protocol not in self.protocol_selection:
-                self.protocol_selection.append(protocol)
-        elif protocol in self.protocol_selection:
-            self.protocol_selection.remove(protocol)
+            current_selection.add(protocol)
+        else:
+            current_selection.discard(protocol)
         self.protocol_selection = sorted(
-            self.protocol_selection
+            list(current_selection)
         )
 
     @rx.event
@@ -88,32 +100,29 @@ class EmsState(rx.State):
         self, intervention: str, checked: bool
     ):
         """Add or remove an intervention from the list."""
+        current_selection = set(self.interventions)
         if checked:
-            if intervention not in self.interventions:
-                self.interventions.append(intervention)
-        elif intervention in self.interventions:
-            self.interventions.remove(intervention)
-        self.interventions = sorted(self.interventions)
+            current_selection.add(intervention)
+        else:
+            current_selection.discard(intervention)
+        self.interventions = sorted(list(current_selection))
 
     @rx.event
     def add_medication(self):
         """Add a new medication entry."""
-        self.medications_given.append(
-            {"med": "", "dose": 0, "unit": ""}
-        )
+        new_list = self.medications_given + [
+            {"med": "", "dose": "", "unit": ""}
+        ]
+        self.medications_given = new_list
 
     @rx.event
     def update_medication(
-        self, index: int, key: str, value: str | int
+        self, index: int, key: str, value: str
     ):
         """Update a specific medication entry."""
         if 0 <= index < len(self.medications_given):
-            if key == "dose":
-                try:
-                    value = int(value)
-                except (ValueError, TypeError):
-                    value = 0
-            med_list = self.medications_given
+            med_list = list(self.medications_given)
+            med_list[index] = med_list[index].copy()
             med_list[index][key] = value
             self.medications_given = med_list
 
@@ -121,7 +130,7 @@ class EmsState(rx.State):
     def remove_medication(self, index: int):
         """Remove a medication entry."""
         if 0 <= index < len(self.medications_given):
-            med_list = self.medications_given
+            med_list = list(self.medications_given)
             med_list.pop(index)
             self.medications_given = med_list
 
@@ -129,22 +138,60 @@ class EmsState(rx.State):
     async def generate_narrative(self):
         """Generate narrative from EMS data."""
         print("Generating EMS narrative...")
-        narrative = f"Unit {self.unit} dispatched for {self.dispatch_reason}. "
-        narrative += f"Patient presented with {self.patient_presentation}. Chief complaint: {self.chief_complaint}. "
+        narrative = f"Unit {self.unit or '[Unit]'}"
+        narrative += f" dispatched for {self.dispatch_reason or '[Reason]'}. "
+        if self.response_delay != "None":
+            narrative += f"Response delay noted: {self.response_delay}. "
+        narrative += f"On arrival, scene described as: {self.patient_presentation or '[Scene]'}. "
+        narrative += f"Patient presents with chief complaint of {self.chief_complaint or '[Complaint]'}. "
+        opqrst_parts = [
+            f"{k.capitalize()}: {v}"
+            for k, v in self.opqrst_data.items()
+            if v
+        ]
+        if opqrst_parts:
+            narrative += (
+                f"OPQRST: {', '.join(opqrst_parts)}. "
+            )
         if not self.vitals_wnl:
-            narrative += f"Vitals: BP {self.bp_systolic}/{self.bp_diastolic}, HR {self.hr}, RR {self.rr}. "
+            vitals_str = f"BP {self.bp_systolic or 'N/A'}/{self.bp_diastolic or 'N/A'}, "
+            vitals_str += f"HR {self.hr or 'N/A'}, RR {self.rr or 'N/A'}."
+            narrative += f"Vitals: {vitals_str} "
         else:
-            narrative += "Vitals WNL. "
-        narrative += f"LOC: {self.level_of_consciousness}. "
+            narrative += (
+                "Vitals assessed as Within Normal Limits. "
+            )
+        narrative += f"Level of Consciousness: {self.level_of_consciousness or '[LOC]'}. "
+        if self.protocol_selection:
+            narrative += f"Protocols considered/followed: {', '.join(self.protocol_selection)}. "
         if self.interventions:
-            narrative += f"Interventions: {', '.join(self.interventions)}. "
+            narrative += f"Interventions performed: {', '.join(self.interventions)}. "
         if self.medications_given:
-            narrative += f"Medications: {'; '.join([f'{m['med']} {m['dose']} {m['unit']}' for m in self.medications_given if m['med']])}. "
-        narrative += f"Transported {self.transport_mode} to {self.destination_facility}."
-        self.ems_narrative = narrative
-        narrative_preview = narrative[:50] + "..."
-        from app.states.session_state import SessionState
-
+            med_strings = [
+                f"{m['med']} {m['dose']}{m['unit']}"
+                for m in self.medications_given
+                if m["med"]
+            ]
+            if med_strings:
+                narrative += f"Medications administered: {'; '.join(med_strings)}. "
+        narrative += f"Patient transported via {self.transport_mode or '[Mode]'}"
+        narrative += f" to {self.destination_facility or '[Facility]'}. "
+        if self.room_number:
+            narrative += (
+                f"Patient left in {self.room_number}. "
+            )
+        if self.receiving_staff:
+            narrative += f"Care transferred to {self.receiving_staff}. "
+        async with self:
+            self.ems_narrative = narrative.strip()
+        yield rx.toast.success(
+            "EMS narrative generated!",
+            duration=2000,
+            position="top-center",
+        )
+        narrative_preview = self.ems_narrative[:50] + (
+            "..." if len(self.ems_narrative) > 50 else ""
+        )
         session_state = await self.get_state(SessionState)
         await session_state.add_session(
             "EMS", narrative_preview
@@ -199,20 +246,24 @@ class EmsState(rx.State):
         self.vitals_wnl = value
 
     @rx.event
-    def set_bp_systolic(self, value: int):
-        self.bp_systolic = value
+    def set_bp_systolic(self, value: str):
+        self.bp_systolic = (
+            int(value) if value.isdigit() else 0
+        )
 
     @rx.event
-    def set_bp_diastolic(self, value: int):
-        self.bp_diastolic = value
+    def set_bp_diastolic(self, value: str):
+        self.bp_diastolic = (
+            int(value) if value.isdigit() else 0
+        )
 
     @rx.event
-    def set_hr(self, value: int):
-        self.hr = value
+    def set_hr(self, value: str):
+        self.hr = int(value) if value.isdigit() else 0
 
     @rx.event
-    def set_rr(self, value: int):
-        self.rr = value
+    def set_rr(self, value: str):
+        self.rr = int(value) if value.isdigit() else 0
 
     @rx.event
     def set_level_of_consciousness(self, value: str):
